@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import fr.insa.ms.matchStudentSupportMS.model.RecommendationResult;
@@ -29,7 +32,14 @@ public class RecommendationController {
 
         List<String> keywords = req.getKeywords();
 
-        List<Student> students = rest.getForObject("http://studentManagementMS/students", ArrayList.class);
+        ResponseEntity<List<Student>> response = rest.exchange(
+            "http://studentManagementMS/students/list",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<List<Student>>() {}
+        );
+
+        List<Student> students = response.getBody();
 
         if (students == null) {
             return new RecommendationResult(requestId, new ArrayList<>());
@@ -37,17 +47,14 @@ public class RecommendationController {
 
         List<Integer> recommended = new ArrayList<>();
 
-        for (Object o : students) {
-            var map = (java.util.LinkedHashMap<?, ?>) o;
-
-            int id = (int) map.get("id");
-            List<String> skills = (List<String>) map.get("competences");
+        for (Student student : students) {
+            List<String> skills = student.getCompetences();
             long matchCount = keywords.stream()
                     .filter(skills::contains)
                     .count();
 
             if (matchCount > 0) {
-                recommended.add(id);
+                recommended.add(student.getId());
             }
         }
         
