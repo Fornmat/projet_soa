@@ -15,7 +15,7 @@ public class Student {
 	private String filiere;
 	private ArrayList<String> competences;
 	private ArrayList<LocalDateTime> disponibilites;
-	private HashMap<String,String> avis;
+	private ArrayList<String> avis;
 	
 	public Student(int id, String lastName, String firstName,String email, String etablissement, String filiere) {
 		this.id=id;
@@ -26,11 +26,11 @@ public class Student {
 		this.filiere=filiere;
 		this.competences = new ArrayList<String>();
 		this.disponibilites = new ArrayList<LocalDateTime>();
-		this.avis = new HashMap<String,String>();
+		this.avis = new ArrayList<String>();
 		
 	}
 	
-	public Student(int id, String lastName, String firstName,String email, String etablissement, String filiere, ArrayList<String> competences, ArrayList<LocalDateTime> disponibilites, HashMap<String,String> avis) {
+	public Student(int id, String lastName, String firstName,String email, String etablissement, String filiere, ArrayList<String> competences, ArrayList<LocalDateTime> disponibilites, ArrayList<String> avis) {
 		this.id=id;
 		this.lastName=lastName;
 		this.firstName=firstName;
@@ -127,16 +127,16 @@ public class Student {
 		this.disponibilites.remove(date);
 	}
 	
-	public HashMap<String,String> getAvis() {
+	public ArrayList<String> getAvis() {
 		return this.avis;
 	}
 	
-	public void setAvis(HashMap<String,String> avis) {
+	public void setAvis(ArrayList<String> avis) {
 		this.avis=avis;
 	}
 	
-	public void addAvis(String titreDemande,String commentaire) {
-		this.avis.put(titreDemande,commentaire);
+	public void addAvis(String commentaire) {
+		this.avis.add(commentaire);
 	}
 	
 }
