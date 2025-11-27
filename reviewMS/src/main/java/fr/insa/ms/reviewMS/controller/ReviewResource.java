@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewResource {
 
-    private final String url = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_056?serverTimezone=UTC&useSSL=false";
+    private final String url = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_056";
     private final String user = "projet_gei_056";
     private final String password = "eNaesh1W";
 
