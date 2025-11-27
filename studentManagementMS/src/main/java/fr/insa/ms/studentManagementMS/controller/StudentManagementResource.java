@@ -173,7 +173,7 @@ public class StudentManagementResource {
 		        );
 	
 		        // Appel de ta fonction custom
-		        bddInsert(stmt,valeurs, "STUDENTS ('FIRSTNAME', 'LASTNAME', 'EMAIL', 'ETABLISSEMENT', 'FILIERE', 'COMPETENCES', 'DISPONIBILITES', 'AVIS')");
+		        bddInsert(stmt,valeurs, "STUDENTS (FIRSTNAME, LASTNAME, EMAIL, ETABLISSEMENT, FILIERE, COMPETENCES, DISPONIBILITES, AVIS)");
 	
 	        }
 	        stmt.close();
@@ -234,7 +234,7 @@ public class StudentManagementResource {
 	        // IMPORTANT : id est auto-incrément → mettre NULL
 	        String affectations = String.format(
 	                "FIRSTNAME='%s', LASTNAME='%s', EMAIL='%s', ETABLISSEMENT='%s', FILIERE='%s', COMPETENCES='%s', DISPONIBILITES='%s', AVIS='%s')",
-	                fn, ln, email, etab, filiere, comp, disp, av
+	                fn, ln, email1, etab, filiere, comp, disp, av
 	        );
 	        
 	        String conditions = String.format(
