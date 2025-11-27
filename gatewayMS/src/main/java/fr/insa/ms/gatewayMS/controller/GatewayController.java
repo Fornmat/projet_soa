@@ -59,11 +59,11 @@ public class GatewayController {
 
         // Mettre à jour le helper
         req.setHelperId(helperId);
-        return rest.putForObject(REQUEST_MS + "/" + requestId, req, Request.class);
+        return rest.patchForObject(REQUEST_MS + "/" + requestId, req, Request.class);
     }
 
     private Request updateRequestStatus(int requestId, String newStatusStr) {
-        return rest.putForObject(
+        return rest.patchForObject(
             REQUEST_MS + "/" + requestId + "/status",
             newStatusStr,
             Request.class
