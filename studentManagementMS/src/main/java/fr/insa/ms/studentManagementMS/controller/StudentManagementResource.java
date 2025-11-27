@@ -261,7 +261,7 @@ public class StudentManagementResource {
         
 	}
 	
-	@GetMapping("/students/login/{firstName}/{last_name}/{email}/")
+	@GetMapping("/students/login/{firstName}/{last_name}/{email}")
 	public Student login(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String email) {
 		
 		
@@ -269,7 +269,7 @@ public class StudentManagementResource {
 		ObjectMapper mapper = new ObjectMapper();
 		try (Connection con = connect();
 				Statement stmt = con.createStatement();
-		ResultSet rs = bddSelect(stmt,"*", "STUDENTS WHERE FIRSTNAME="+firstName+" AND LASTNAME="+lastName+" AND EMAIL="+email)) {
+		ResultSet rs = bddSelect(stmt,"*", "STUDENTS WHERE FIRSTNAME='"+firstName+"' AND LASTNAME='"+lastName+"' AND EMAIL='"+email+"'")) {
 			if (rs.next()) {
 				
 	            int id = rs.getInt("ID");
@@ -360,9 +360,8 @@ public class StudentManagementResource {
 	                    new ArrayList<>(disponibilites),
 	                    new ArrayList<>(avis)
 	            );
-	            System.out.println("Bienvenue "+firstName+" "+lastName+" !");
 			} else {
-				System.out.println("Vous n'êtes pas inscrit");
+				System.out.println("Cette personne n'est pas inscrite");
 			}
 			stmt.close();
 			
