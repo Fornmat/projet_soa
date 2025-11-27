@@ -24,7 +24,7 @@ public class GatewayService {
 
     // ---- StudentProxy ----
     public Student studentLogin(String fn, String ln, String email) {
-        return rest.getForObject(STUDENT_MS + "/login/" + fn + "/" + ln + "/" + email + "/", Student.class);
+        return rest.getForObject(STUDENT_MS + "/login/" + fn + "/" + ln + "/" + email, Student.class);
     }
 
     public Student getStudentById(int id) {
