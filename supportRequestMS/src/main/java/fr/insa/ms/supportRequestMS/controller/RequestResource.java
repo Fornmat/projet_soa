@@ -13,44 +13,57 @@ import java.util.Arrays;
 @RequestMapping("/requests")
 public class RequestResource {
 
-    private final String url = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_056?serverTimezone=UTC&useSSL=false";
+    private final String url = "jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_056";
     private final String user = "projet_gei_056";
     private final String password = "eNaesh1W";
 
     @PostMapping
-	public Request createRequest(@RequestBody Request request) {
-	    String sql = "INSERT INTO requests (title, description, requester_id, helper_id, desired_date, status, keywords) VALUES (?, ?, ?, ?, ?, ?, ?)";
-	    
-	    try (Connection conn = DriverManager.getConnection(url, user, password);
-	         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-	
-	        stmt.setString(1, request.getTitle());
-	        stmt.setString(2, request.getDescription());
-	        stmt.setInt(3, request.getRequesterId());
-	        stmt.setInt(4, request.getHelperId());
-	        stmt.setTimestamp(5, Timestamp.valueOf(request.getDesiredDate()));
-	        stmt.setString(6, request.getStatus() != null ? request.getStatus().name() : Request.Status.ATTENTE.name());
-	
-	        stmt.setString(7, request.getKeywords() != null ? String.join(",", request.getKeywords()) : null);
-	
-	        stmt.executeUpdate();
-	
-	        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-	            if (generatedKeys.next()) {
-	                request.setId(generatedKeys.getInt(1));
-	            }
-	        }
-	
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return request;
-	}
+    public Request createRequest(@RequestBody Request request) {
+        String sql = "INSERT INTO REQUESTS (TITLE, DESCRIPTION, REQUESTER_ID, HELPER_ID, DESIRED_DATE, STATUS, KEYWORDS) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setString(1, request.getTitle());
+            stmt.setString(2, request.getDescription());
+            stmt.setInt(3, request.getRequesterId());
+            stmt.setInt(4, request.getHelperId());
+            stmt.setTimestamp(5, Timestamp.valueOf(request.getDesiredDate()));
+            stmt.setString(6, request.getStatus() != null ? request.getStatus().name() : Request.Status.ATTENTE.name());
+            stmt.setString(7, request.getKeywords() != null ? String.join(",", request.getKeywords()) : null);
+
+            stmt.executeUpdate();
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    request.setId(generatedKeys.getInt(1));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return request;
+    }
+
 	
 	@GetMapping
 	public ArrayList<Request> getAllRequests() {
 	    ArrayList<Request> requests = new ArrayList<>();
-	    String sql = "SELECT * FROM requests";
+	    String sql = "SELECT * FROM REQUESTS";
 	
 	    try (Connection conn = DriverManager.getConnection(url, user, password);
 	         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -59,14 +72,14 @@ public class RequestResource {
 	        while (rs.next()) {
 	            Request r = new Request();
 	            r.setId(rs.getInt("id"));
-	            r.setTitle(rs.getString("title"));
-	            r.setDescription(rs.getString("description"));
-	            r.setRequesterId(rs.getInt("requester_id"));
-	            r.setHelperId(rs.getInt("helper_id"));
-	            r.setDesiredDate(rs.getTimestamp("desired_date").toLocalDateTime());
-	            r.setStatus(Request.Status.valueOf(rs.getString("status")));
+	            r.setTitle(rs.getString("TITLE"));
+	            r.setDescription(rs.getString("DESCRIPTION"));
+	            r.setRequesterId(rs.getInt("REQUESTER_ID"));
+	            r.setHelperId(rs.getInt("HELPER_ID"));
+	            r.setDesiredDate(rs.getTimestamp("DESIRED_DATE").toLocalDateTime());
+	            r.setStatus(Request.Status.valueOf(rs.getString("STATUS")));
 	
-	            String keywordsStr = rs.getString("keywords");
+	            String keywordsStr = rs.getString("KEYWORDS");
 	            ArrayList<String> keywords = new ArrayList<>();
 	            if (keywordsStr != null && !keywordsStr.isEmpty()) {
 	                keywords.addAll(Arrays.asList(keywordsStr.split(",")));
@@ -86,7 +99,7 @@ public class RequestResource {
 	@GetMapping("/{id}")
 	public Request getRequestById(@PathVariable int id) {
 	    Request r = null;
-	    String sql = "SELECT * FROM requests WHERE id = ?";
+	    String sql = "SELECT * FROM REQUESTS WHERE id = ?";
 	
 	    try (Connection conn = DriverManager.getConnection(url, user, password);
 	         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -96,14 +109,14 @@ public class RequestResource {
 	            if (rs.next()) {
 	                r = new Request();
 	                r.setId(rs.getInt("id"));
-	                r.setTitle(rs.getString("title"));
-	                r.setDescription(rs.getString("description"));
-	                r.setRequesterId(rs.getInt("requester_id"));
-	                r.setHelperId(rs.getInt("helper_id"));
-	                r.setDesiredDate(rs.getTimestamp("desired_date").toLocalDateTime());
-	                r.setStatus(Request.Status.valueOf(rs.getString("status")));
+	                r.setTitle(rs.getString("TITLE"));
+	                r.setDescription(rs.getString("DESCRIPTION"));
+	                r.setRequesterId(rs.getInt("REQUESTER_ID"));
+	                r.setHelperId(rs.getInt("HELPER_ID"));
+	                r.setDesiredDate(rs.getTimestamp("DESIRED_DATE").toLocalDateTime());
+	                r.setStatus(Request.Status.valueOf(rs.getString("STATUS")));
 	
-	                String keywordsStr = rs.getString("keywords");
+	                String keywordsStr = rs.getString("KEYWORDS");
 	                ArrayList<String> keywords = new ArrayList<>();
 	                if (keywordsStr != null && !keywordsStr.isEmpty()) {
 	                    keywords.addAll(Arrays.asList(keywordsStr.split(",")));
@@ -122,7 +135,7 @@ public class RequestResource {
 	@GetMapping("/requester/{requesterId}")
 	public ArrayList<Request> getRequestsByRequesterId(@PathVariable int requesterId) {
 		ArrayList<Request> requests = new ArrayList<>();
-	    String sql = "SELECT * FROM requests WHERE requester_id = ?";
+	    String sql = "SELECT * FROM REQUESTS WHERE REQUESTER_ID = ?";
 
 	    try (Connection conn = DriverManager.getConnection(url, user, password);
 	         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -133,14 +146,14 @@ public class RequestResource {
 	            while (rs.next()) {
 	                Request r = new Request();
 	                r.setId(rs.getInt("id"));
-	                r.setTitle(rs.getString("title"));
-	                r.setDescription(rs.getString("description"));
-	                r.setRequesterId(rs.getInt("requester_id"));
-	                r.setHelperId(rs.getInt("helper_id"));
-	                r.setDesiredDate(rs.getTimestamp("desired_date").toLocalDateTime());
-	                r.setStatus(Request.Status.valueOf(rs.getString("status")));
+	                r.setTitle(rs.getString("TITLE"));
+	                r.setDescription(rs.getString("DESCRIPTION"));
+	                r.setRequesterId(rs.getInt("REQUESTER_ID"));
+	                r.setHelperId(rs.getInt("HELPER_ID"));
+	                r.setDesiredDate(rs.getTimestamp("DESIRED_DATE").toLocalDateTime());
+	                r.setStatus(Request.Status.valueOf(rs.getString("STATUS")));
 
-	                String keywordsStr = rs.getString("keywords");
+	                String keywordsStr = rs.getString("KEYWORDS");
 	                ArrayList<String> keywords = new ArrayList<>();
 	                if (keywordsStr != null && !keywordsStr.isEmpty()) {
 	                    keywords.addAll(Arrays.asList(keywordsStr.split(",")));
@@ -161,7 +174,7 @@ public class RequestResource {
 	
 	@PutMapping("/{id}")
 	public Request updateRequest(@PathVariable int id, @RequestBody Request request) {
-	    String sql = "UPDATE requests SET title = ?, description = ?, requester_id = ?, helper_id = ?, desired_date = ?, status = ?, keywords = ? WHERE id = ?";
+	    String sql = "UPDATE REQUESTS SET TITLE = ?, DESCRIPTION = ?, REQUESTER_ID = ?, HELPER_ID = ?, DESIRED_DATE = ?, STATUS = ?, KEYWORDS = ? WHERE id = ?";
 	
 	    try (Connection conn = DriverManager.getConnection(url, user, password);
 	         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -196,8 +209,8 @@ public class RequestResource {
 	        throw new RuntimeException("Invalid status value");
 	    }
 	
-	    String selectSql = "SELECT id, status FROM requests WHERE id = ?";
-	    String updateSql = "UPDATE requests SET status = ? WHERE id = ?";
+	    String selectSql = "SELECT id, STATUS FROM REQUESTS WHERE id = ?";
+	    String updateSql = "UPDATE REQUESTS SET STATUS = ? WHERE id = ?";
 	
 	    try (Connection conn = DriverManager.getConnection(url, user, password)) {
 	
@@ -207,7 +220,7 @@ public class RequestResource {
 	                if (rs.next()) {
 	                    r = new Request();
 	                    r.setId(rs.getInt("id"));
-	                    r.setStatus(Status.valueOf(rs.getString("status")));
+	                    r.setStatus(Status.valueOf(rs.getString("STATUS")));
 	                } else {
 	                    throw new RuntimeException("Request not found");
 	                }
@@ -236,7 +249,7 @@ public class RequestResource {
 	
 	@DeleteMapping("/{id}")
 	public boolean deleteRequest(@PathVariable int id) {
-	    String sql = "DELETE FROM requests WHERE id = ?";
+	    String sql = "DELETE FROM REQUESTS WHERE id = ?";
 	
 	    try (Connection conn = DriverManager.getConnection(url, user, password);
 	         PreparedStatement stmt = conn.prepareStatement(sql)) {
