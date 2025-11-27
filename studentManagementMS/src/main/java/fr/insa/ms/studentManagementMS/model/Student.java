@@ -44,7 +44,7 @@ public class Student {
 	}
 	
 	public Student() {
-		
+		this.id=0;
 	}
 	
 	public int getId() {
