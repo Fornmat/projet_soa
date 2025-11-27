@@ -63,7 +63,7 @@ public class StudentManagementResource {
 	public void bddInsert(Statement stmt, String valeurs, String cible) {
 		String requete = "INSERT INTO "+cible+" VALUES "+valeurs;
 		try {
-		      int nbMaj = stmt.executeUpdate(requete);
+		      stmt.executeUpdate(requete);
 		    } catch (SQLException e) {
 		      e.printStackTrace();
 		};
@@ -72,7 +72,7 @@ public class StudentManagementResource {
 	public void bddUpdate(Statement stmt,String affectations, String cible, String conditions) {
 		String requete = "UPDATE "+cible+" SET "+affectations+ " WHERE "+conditions;
 		try {
-		      int nbMaj = stmt.executeUpdate(requete);
+		      stmt.executeUpdate(requete);
 		    } catch (SQLException e) {
 		      e.printStackTrace();
 		};
@@ -194,7 +194,7 @@ public class StudentManagementResource {
 		Connection con = connect();
 		try {
 		      Statement stmt = con.createStatement();
-		      int nbMaj = stmt.executeUpdate(requete);
+		      stmt.executeUpdate(requete);
 		      stmt.close();
 		      disconnect(con);
 		      return true;
