@@ -2,7 +2,6 @@ package fr.insa.ms.gatewayMS.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 //@XmlRootElement(name = "Student")

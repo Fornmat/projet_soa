@@ -4,12 +4,7 @@ public class Review {
 
     private int studentId;
     private String reviewText;
-
-
-    public Review(int studentId, String reviewText) {
-        this.studentId = studentId;
-        this.reviewText = reviewText;
-    }
+    private int reviewerId;
 
     public int getStudentId() {
         return studentId;
@@ -23,7 +18,15 @@ public class Review {
         return reviewText;
     }
 
-    public void setReview(String reviewText) {
+    public void setReviewText(String reviewText) {
         this.reviewText = reviewText;
+    }
+
+    public int getReviewerId() {
+        return reviewerId;
+    }
+
+    public void setReviewerId(int reviewerId) {
+        this.reviewerId = reviewerId;
     }
 }
