@@ -42,14 +42,15 @@ public class ReviewResource {
 			return "Review text cannot be empty.";
 		}
 
-		String sql = "INSERT INTO REVIEWS (STUDENT_ID, REVIEW_TEXT) VALUES (?, ?)";
+        String sql = "INSERT INTO REVIEWS (STUDENT_ID, REVIEW_TEXT, REVIEWER_ID) VALUES (?, ?, ?)";
 
 		try (Connection con = connect(); 
 			PreparedStatement stmt = con.prepareStatement(sql)) {
 
 			stmt.setInt(1, studentId);
 			stmt.setString(2, review.getReviewText());
-
+			stmt.setInt(3, review.getReviewerId());
+			
 			int rowsAffected = stmt.executeUpdate();
 
 			if (rowsAffected > 0) {
@@ -65,10 +66,10 @@ public class ReviewResource {
 	}
 
 	@GetMapping("/{studentId}")
-	public List<String> getReviews(@PathVariable int studentId) {
-		List<String> reviews = new ArrayList<>();
+	public List<Review> getReviews(@PathVariable int studentId) {
+		List<Review> reviews = new ArrayList<>();
 
-		String sql = "SELECT REVIEW_TEXT FROM REVIEWS WHERE STUDENT_ID = ?";
+		String sql = "SELECT REVIEW_TEXT, REVIEWER_ID FROM REVIEWS WHERE STUDENT_ID = ?";
 
 		try (Connection con = connect(); 
 			PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -77,7 +78,9 @@ public class ReviewResource {
 
 			try (ResultSet rs = stmt.executeQuery()) {
 				while (rs.next()) {
-					reviews.add(rs.getString("REVIEW_TEXT"));
+					String reviewText = rs.getString("REVIEW_TEXT");
+					int reviewerId = rs.getInt("REVIEWER_ID");
+					reviews.add(new Review(studentId, reviewText, reviewerId));
 				}
 			}
 

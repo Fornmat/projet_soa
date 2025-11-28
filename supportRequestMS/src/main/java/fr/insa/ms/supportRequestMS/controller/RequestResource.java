@@ -171,7 +171,45 @@ public class RequestResource {
 	    return requests;
 	}
 
-	
+	@GetMapping("/helper/{helperId}")
+	public ArrayList<Request> getRequestsByHelperId(@PathVariable int helperId) {
+		ArrayList<Request> requests = new ArrayList<>();
+	    String sql = "SELECT * FROM REQUESTS WHERE HELPER_ID = ?";
+
+	    try (Connection conn = DriverManager.getConnection(url, user, password);
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setInt(1, helperId);
+
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                Request r = new Request();
+	                r.setId(rs.getInt("id"));
+	                r.setTitle(rs.getString("TITLE"));
+	                r.setDescription(rs.getString("DESCRIPTION"));
+	                r.setRequesterId(rs.getInt("REQUESTER_ID"));
+	                r.setHelperId(rs.getInt("HELPER_ID"));
+	                r.setDesiredDate(rs.getTimestamp("DESIRED_DATE").toLocalDateTime());
+	                r.setStatus(Request.Status.valueOf(rs.getString("STATUS")));
+
+	                String keywordsStr = rs.getString("KEYWORDS");
+	                ArrayList<String> keywords = new ArrayList<>();
+	                if (keywordsStr != null && !keywordsStr.isEmpty()) {
+	                    keywords.addAll(Arrays.asList(keywordsStr.split(",")));
+	                }
+	                r.setKeywords(keywords);
+
+	                requests.add(r);
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return requests;
+	}
+
 	@PutMapping("/{id}")
 	public Request updateRequest(@PathVariable int id, @RequestBody Request request) {
 	    String sql = "UPDATE REQUESTS SET TITLE = ?, DESCRIPTION = ?, REQUESTER_ID = ?, HELPER_ID = ?, DESIRED_DATE = ?, STATUS = ?, KEYWORDS = ? WHERE id = ?";
