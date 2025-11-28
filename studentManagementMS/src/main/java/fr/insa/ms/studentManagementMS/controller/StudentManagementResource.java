@@ -206,7 +206,7 @@ public class StudentManagementResource {
 	}
 	
 	
-	@PutMapping("/students/update/{firstName}/{last_name}/{email}/")
+	@PutMapping("/students/update/{firstName}/{lastName}/{email}")
 	public boolean updateProfile(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String email, @RequestBody Student student) {
 		
 		Connection con = connect();
@@ -233,12 +233,12 @@ public class StudentManagementResource {
 
 	        // IMPORTANT : id est auto-incrément → mettre NULL
 	        String affectations = String.format(
-	                "FIRSTNAME='%s', LASTNAME='%s', EMAIL='%s', ETABLISSEMENT='%s', FILIERE='%s', COMPETENCES='%s', DISPONIBILITES='%s', AVIS='%s')",
+	                "FIRSTNAME='%s', LASTNAME='%s', EMAIL='%s', ETABLISSEMENT='%s', FILIERE='%s', COMPETENCES='%s', DISPONIBILITES='%s', AVIS='%s'",
 	                fn, ln, email1, etab, filiere, comp, disp, av
 	        );
 	        
 	        String conditions = String.format(
-	                "FIRSNAME='%s', LASTNAME='%s', EMAIL='%s'",
+	                "FIRSTNAME='%s' AND LASTNAME='%s' AND EMAIL='%s'",
 	                firstName, lastName, email
 	        );
 
@@ -261,7 +261,7 @@ public class StudentManagementResource {
         
 	}
 	
-	@GetMapping("/students/login/{firstName}/{last_name}/{email}")
+	@GetMapping("/students/login/{firstName}/{lastName}/{email}")
 	public Student login(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String email) {
 		
 		
