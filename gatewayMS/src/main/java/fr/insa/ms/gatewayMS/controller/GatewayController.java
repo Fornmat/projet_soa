@@ -39,6 +39,17 @@ public class GatewayController {
         return logged;
     }
 
+    @PutMapping("/logout")
+    public void logout() {
+        currentUser = null;
+    }
+
+    @PutMapping("/students/update")
+    public boolean updateStudentProfile(@RequestBody Student student) {
+        checkLoggedIn();
+        return gatewayService.updateStudentProfile(student);
+}
+
     @PostMapping("/requests")
     public Response createRequest(@RequestBody Request request) {
         checkLoggedIn();
@@ -63,13 +74,13 @@ public class GatewayController {
         return gatewayService.listRequestsByHelper(currentUser.getId());
     }
 
-    @PostMapping("/requests/requester/{requestId}/select-helper/{helperId}")
+    @PutMapping("/requests/requester/{requestId}/select-helper/{helperId}")
     public Request selectHelper(@PathVariable int requestId, @PathVariable int helperId) {
         checkLoggedIn();
         return gatewayService.selectHelperForRequest(requestId, helperId);
     }
 
-    @PostMapping("/requests/{requestId}/update-status/{status}")
+    @PutMapping("/requests/{requestId}/update-status/{status}")
     public Request changeRequestStatus(@PathVariable int requestId, @PathVariable String status) {
         checkLoggedIn();
         return gatewayService.updateRequestStatus(requestId, status);

@@ -6,6 +6,8 @@ import fr.insa.ms.gatewayMS.model.Response;
 import fr.insa.ms.gatewayMS.model.Review;
 import fr.insa.ms.gatewayMS.model.RecommendationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,6 +41,15 @@ public class GatewayService {
         return rest.postForObject(STUDENT_MS + "/signUp", s, Boolean.class);
     }
 
+    public boolean updateStudentProfile(Student student) {
+        if (student == null || student.getId() == 0) {
+            throw new RuntimeException("Étudiant invalide pour la mise à jour.");
+        }
+
+        String url = STUDENT_MS + "/update"; 
+        return rest.exchange(url, HttpMethod.PUT, new HttpEntity<>(student), Boolean.class).getBody();
+    }
+
     // ---- RequestProxy ----
     public Request createRequestMS(Request r) {
         return rest.postForObject(REQUEST_MS, r, Request.class);
@@ -62,11 +73,11 @@ public class GatewayService {
             throw new RuntimeException("Request not found");
 
         req.setHelperId(helperId);
-        return rest.postForObject(REQUEST_MS + "/" + requestId, req, Request.class);
+        return rest.exchange(REQUEST_MS + "/" + requestId, HttpMethod.PUT, new HttpEntity<>(req), Request.class).getBody();
     }
 
     public Request updateRequestStatus(int requestId, String newStatusStr) {
-        return rest.patchForObject(REQUEST_MS + "/" + requestId + "/status", newStatusStr, Request.class);
+        return rest.exchange(REQUEST_MS + "/" + requestId + "/status", HttpMethod.PUT, new HttpEntity<>(newStatusStr), Request.class).getBody();
     }
 
     // ---- RecommendationProxy ----
