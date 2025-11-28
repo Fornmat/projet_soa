@@ -206,7 +206,7 @@ public class StudentManagementResource {
 	}
 	
 	
-	@PutMapping("/students/update/{firstName}/{last_name}/{email}/")
+	@PutMapping("/students/update/{firstName}/{lastName}/{email}")
 	public boolean updateProfile(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String email, @RequestBody Student student) {
 		
 		Connection con = connect();
@@ -261,7 +261,7 @@ public class StudentManagementResource {
         
 	}
 	
-	@GetMapping("/students/login/{firstName}/{last_name}/{email}")
+	@GetMapping("/students/login/{firstName}/{lastName}/{email}")
 	public Student login(@PathVariable String firstName, @PathVariable String lastName, @PathVariable String email) {
 		
 		
